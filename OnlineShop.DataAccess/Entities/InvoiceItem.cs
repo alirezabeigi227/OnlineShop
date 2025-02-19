@@ -15,9 +15,6 @@ namespace OnlineShop.DataAccess.Entities
 
         public string ProductName { get; set; }
 
-        public decimal ToTalPrice { get; set; }
-
-        public int Count { get; set; } //تعداد
 
         public DateTime CreatedAt { get; set; }
 

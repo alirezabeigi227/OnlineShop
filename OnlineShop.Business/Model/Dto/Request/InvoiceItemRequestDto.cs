@@ -11,12 +11,6 @@ namespace OnlineShop.Business.Model.Dto.Request
     {
         public string ProductName { get; set; }
 
-        public decimal TotalPrice { get; set; }
-
-        public long Fee { get; set; }
-
-        public int Count { get; set; } //تعداد
-
         public int ProductId { get; set; }
 
         public DateTime CreatedAt { get; set; }

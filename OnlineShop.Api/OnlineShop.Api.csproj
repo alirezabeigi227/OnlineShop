@@ -27,4 +27,8 @@
     <ProjectReference Include="..\OnlineShop.DataAccess\OnlineShop.DataAccess.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="NewFolder\" />
+  </ItemGroup>
+
 </Project>

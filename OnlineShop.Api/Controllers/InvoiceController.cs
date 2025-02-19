@@ -10,7 +10,7 @@ using System.Numerics;
 
 namespace OnlineShop.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/V1/[controller]")]
     [ApiController]
     public class InvoiceController : ControllerBase
     {
@@ -46,15 +46,14 @@ namespace OnlineShop.Api.Controllers
 
 
 
-        [HttpPost("create")]
+        [HttpPost()]
         public async Task<ActionResult<InvoiceItemRequestDto>> CreateInvoiceWithItems([FromBody] InvoiceRequestDto invoiceDto)
         {
             if (invoiceDto == null)
             {
                 return BadRequest("Invoice data is required.");
             }
-
-            
+           
                 // ایجاد فاکتور به همراه آیتم‌های آن
                 var createdInvoice = await _invoiceService.CreateInvoice(invoiceDto);
                
@@ -62,8 +61,19 @@ namespace OnlineShop.Api.Controllers
           
         }
 
+        [HttpGet("Invoice/{Id}")]
+        public async Task<ActionResult<BasketItemDto>> GetInvoiceWithItems(int Id)
+        {
+            var result = await _invoiceService.GetInvoiceById(Id);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+        }
 
-        [HttpGet("AllInvoice")]
+
+        [HttpGet("AllInvoice/{Id}")]
 
 
         public async Task<ActionResult<Invoice>> GetAllInvoice()
@@ -72,7 +82,7 @@ namespace OnlineShop.Api.Controllers
             return Ok(result);
         }
 
-        [HttpGet("GetInvoice")]
+        [HttpGet("GetInvoice/{Id}")]
         public async Task<ActionResult<Invoice>> GetInvoiceById(int Id)
         {
             var result = await _invoiceService.GetInvoiceById(Id);
@@ -85,7 +95,7 @@ namespace OnlineShop.Api.Controllers
 
         }
 
-        [HttpPut("{id}  UpdateInvoice")]
+        [HttpPut("put/{id}")]
         public async Task<ActionResult<Invoice>> UpdateInvoice(int id, [FromBody] InvoiceRequestDto invoiceDto)
         {
 
@@ -98,7 +108,7 @@ namespace OnlineShop.Api.Controllers
 
             return Ok(result);
         }
-        [HttpDelete("DeleteInvoice")]
+        [HttpDelete("Delete/{Id}")]
 
         public async Task<ActionResult> DeleteInvoice(int id)
         {

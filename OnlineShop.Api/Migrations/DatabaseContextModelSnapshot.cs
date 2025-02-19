@@ -3,20 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnlineShop.DataAccess.DataContext;
 
 #nullable disable
 
-namespace OnlineShop.DataAccess.Migrations
+namespace OnlineShop.Api.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20241209104339_Init")]
-    partial class Init
+    partial class DatabaseContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,6 +35,8 @@ namespace OnlineShop.DataAccess.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("Baskets");
                 });
 
@@ -51,16 +50,6 @@ namespace OnlineShop.DataAccess.Migrations
 
                     b.Property<int>("BasketId")
                         .HasColumnType("int");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
@@ -118,9 +107,6 @@ namespace OnlineShop.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("Count")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -133,9 +119,6 @@ namespace OnlineShop.DataAccess.Migrations
                     b.Property<string>("ProductName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("ToTalPrice")
-                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -173,7 +156,10 @@ namespace OnlineShop.DataAccess.Migrations
             modelBuilder.Entity("OnlineShop.DataAccess.Entities.User", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -194,6 +180,17 @@ namespace OnlineShop.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("OnlineShop.DataAccess.Entities.Basket", b =>
+                {
+                    b.HasOne("OnlineShop.DataAccess.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("OnlineShop.DataAccess.Entities.BasketItem", b =>
@@ -245,23 +242,9 @@ namespace OnlineShop.DataAccess.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("OnlineShop.DataAccess.Entities.User", b =>
-                {
-                    b.HasOne("OnlineShop.DataAccess.Entities.Basket", "Basket")
-                        .WithOne("User")
-                        .HasForeignKey("OnlineShop.DataAccess.Entities.User", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Basket");
-                });
-
             modelBuilder.Entity("OnlineShop.DataAccess.Entities.Basket", b =>
                 {
                     b.Navigation("BasketItems");
-
-                    b.Navigation("User")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("OnlineShop.DataAccess.Entities.Invoice", b =>

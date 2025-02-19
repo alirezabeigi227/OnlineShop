@@ -14,6 +14,7 @@ namespace OnlineShop.DataAccess.DataContext
             : base(options)
         {
         }
+       
 
         public DbSet<User> Users { get; set; }
         public DbSet<Product> Products { get; set; }
@@ -31,7 +32,7 @@ namespace OnlineShop.DataAccess.DataContext
             //modelBuilder.Entity<User>()
             //    .HasMany(u => u.Invoices)
             //    .WithOne(i => i.User);
-
+            
 
             //modelBuilder.Entity<Invoice>()
             //    .HasMany(i => i.InvoiceItems)

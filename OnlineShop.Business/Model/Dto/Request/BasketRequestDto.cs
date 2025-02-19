@@ -8,7 +8,7 @@ namespace OnlineShop.Business.Model.Dto.Request
 {
     public class BasketRequestDto
     {
-        public int Id { get; set; }
+        //public int Id { get; set; }
 
         public int UserId { get; set; }
 

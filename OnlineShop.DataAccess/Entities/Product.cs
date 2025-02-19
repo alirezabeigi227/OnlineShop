@@ -6,23 +6,87 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OnlineShop.DataAccess.Entities
+namespace OnlineShop.DataAccess.Entities;
+
+public abstract class BaseEntity
 {
-    public class Product
+    public Guid Id { get;  set; }
+
+    protected abstract void SetId();
+}
+
+public class Product :BaseEntity
+{
+    
+    public string Name { get;private set; }
+
+    public string Description { get;private set; }
+
+    public decimal Price { get;private  set; }
+   
+
+    public Product(string name, string description, decimal price)
     {
-        [Key]
-        public int Id { get; set; }
+        
+        Description = description;
+        SetName(name);
+        SetPrice(price);
+    }
 
-        public string Name { get; set; }
+    public void Updateproduct(string name,string description, decimal price )
+    {
+        SetName(name);
+        SetPrice(price);
+        Description = description;
+    }
 
-        public string Description { get; set; }
 
-        public decimal Price { get; set; }
+        public string GetName()
+        {
+            return Name;
+        }
 
-        //public virtual List<InvoiceItem> InvoiceItems { get; set; }
+        public void SetName(string Name)
+        {
+            
+            if (string.IsNullOrWhiteSpace(Name))
+            {
+                throw new ArgumentException("اسم را وارد کنید");
+            }
+            
+        }
 
-        //public virtual List<BasketItem> BasketItems { get; set; }
+        
+        public decimal GetPrice() 
+        {
+            return Price;
+        }
 
        
+        public void SetPrice(decimal Price)
+        {
+            
+            if (Price <= 1000)
+            {
+                throw new ArgumentException("قیمت را به درستی وارد کنید");
+            }
+         
+        }
+
+       
+        public void DisplayInfo()
+        {
+            Console.WriteLine($"Product Name: {Name}, Price: {Price}");
+        }
+
+    protected override void SetId()
+    {
+      Id = Guid.NewGuid();
     }
 }
+
+
+
+
+
+

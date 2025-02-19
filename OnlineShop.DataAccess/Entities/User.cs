@@ -24,9 +24,7 @@ namespace OnlineShop.DataAccess.Entities
 
         
         public virtual List<Invoice> Invoices { get; set; }
-
-      
-        [ForeignKey(nameof(Id))]
-        public Basket Basket { get; set; }
+       
+  
     }
 }

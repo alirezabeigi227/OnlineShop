@@ -29,15 +29,15 @@ namespace OnlineShop.Business.Services
                 throw new Exception("کاربر پیدا نشد");
 
             }
-
-            var invoice = new Invoice
-            {
-                Title = invoiceDto.Title,
-                Description = invoiceDto.Description,
-                Address = invoiceDto.Address,
-                InvoiceDate = invoiceDto.InvoiceDate,
-                UserId = invoiceDto.UserId,
-            };
+            var invoice = new Invoice(invoiceDto.Title, invoiceDto.Description, invoiceDto.Address);
+            //var invoice = new Invoice
+            //{
+            //    Title = invoiceDto.Title,
+            //    Description = invoiceDto.Description,
+            //    Address = invoiceDto.Address,
+            //    InvoiceDate = invoiceDto.InvoiceDate,
+            //    UserId = invoiceDto.UserId,
+            //};
             _Context.Invoices.Add(invoice);
 
 
@@ -49,7 +49,6 @@ namespace OnlineShop.Business.Services
                 {
                     ProductId = itemDto.ProductId,
                     ProductName = itemDto.ProductName,
-                    ToTalPrice = itemDto.TotalPrice,
                     InvoiceId = invoice.Id
                 };
                 _Context.InvoicesItem.Add(invoiceItem);
@@ -58,11 +57,44 @@ namespace OnlineShop.Business.Services
 
             await _Context.SaveChangesAsync();
 
-
-
             return invoiceDto;
-
         }
+
+        public InvoiceDto? GetInvoiceWithItems(int Id)
+        {
+            var invoiceData = (from invoices in _Context.Invoices
+                               where invoices.Id == Id
+                               select invoices).SingleOrDefault();
+
+            if (invoiceData == null)
+            {
+                return null;
+            }
+            var invoiceItems = (from invoiceItem in _Context.InvoicesItem
+                                join invoices in _Context.Invoices
+                                on invoiceItem.ProductId equals invoices.Id
+                                where invoiceItem.InvoiceId == invoiceData.Id
+                                select new InvoiceItemDto
+                                {
+                                    invoiceTitle = invoiceData.Title,
+                                    invoiceAddress = invoiceData.Address,
+                                    invoiceDescription = invoiceData.Description,
+                                    invoiceId = invoiceData.Id,
+                                    ProductPrice = invoiceItem.ProductId,
+                                    ProductId = invoiceItem.ProductId,
+                                    ProductName = invoiceItem.ProductName,
+
+
+
+                                }).ToList();
+            var result = new InvoiceDto
+            {
+                Id = invoiceData.Id,
+                Items = invoiceItems
+            };
+            return result;
+        }
+
 
         public async Task<List<Invoice>> GetAllInvoiceAsync()
         {
@@ -75,10 +107,15 @@ namespace OnlineShop.Business.Services
             var Invoice = await _Context.Invoices.SingleOrDefaultAsync(x => x.Id == Id);
             return Invoice;
         }
+
+        //UPDATE
         public async Task<Invoice?> UpdateInvoiceAsync(int Id, InvoiceRequestDto invoiceDto)
         {
             var Invoice = await _Context.Invoices.FirstOrDefaultAsync(x => x.Id == Id);
             if (Invoice == null) { return null; }
+
+            Invoice.Updateinvoice(invoiceDto.Title, invoiceDto.Description, invoiceDto.Address);
+
             Invoice.Title = invoiceDto.Title;
             Invoice.Description = invoiceDto.Description;
             Invoice.Address = invoiceDto.Address;
